@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "App.h"
+#include <spdlog/spdlog.h>
 
 class MySandbox : public engine::App
 {
@@ -10,7 +11,10 @@ public:
 
 int main()
 {
+    spdlog::set_level(spdlog::level::debug);
+
     MySandbox sandbox;
+    //sandbox.setFullscreen();
     sandbox.exec();
 
     return 0;

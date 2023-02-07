@@ -16,8 +16,6 @@ App::App()
 {
     assert(s_instance == nullptr);
     s_instance = this;
-
-    spdlog::set_level(spdlog::level::debug);
 }
 
 auto App::getInstance() -> App &
@@ -52,7 +50,15 @@ void App::setupWindow()
         assert(false);
     }
 
-    m_window = glfwCreateWindow(m_width, m_height, m_windowTitle.c_str(), nullptr, nullptr);
+    auto monitor = m_fullscreen ? glfwGetPrimaryMonitor() : nullptr;
+    if (monitor != nullptr)
+    {
+        auto videoMode = glfwGetVideoMode(monitor);
+        m_width = videoMode->width;
+        m_height = videoMode->height;
+    }
+
+    m_window = glfwCreateWindow(m_width, m_height, m_windowTitle.c_str(), monitor, nullptr);
     if (!m_window)
     {
         spdlog::critical("glfwCreateWindow() failed");
@@ -61,8 +67,10 @@ void App::setupWindow()
         assert(false);
     }
 
+    glfwGetWindowSize(m_window, &m_width, &m_height);
     glfwSetWindowSizeCallback(m_window, &App::glfwResizeCallback);
     glfwMakeContextCurrent(m_window);
+    spdlog::debug("created window with size ({}, {})", m_width, m_height);
 
     auto err = glewInit();
     if (err != GLEW_OK)
