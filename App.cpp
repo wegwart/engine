@@ -9,6 +9,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "App.h"
+#include "OverlayWindow.h"
 
 static const char *GLSL_VERSION = "#version 130";
 #define OPENGL_VERSION_MAJOR 3
@@ -37,6 +38,8 @@ void App::exec()
 {
     setupWindow();
 
+    OverlayWindow debugOverlay;
+
     while (!glfwWindowShouldClose(m_window))
     {
         glfwPollEvents();
@@ -45,7 +48,7 @@ void App::exec()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow(&showDemo);
+        debugOverlay.render();
 
         ImGui::Render();
 
