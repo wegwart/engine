@@ -3,4 +3,5 @@ project(engine)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(engine main.cpp)
+add_executable(engine main.cpp App.h App.cpp)
+target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt)
