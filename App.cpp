@@ -4,8 +4,15 @@
 #include <GLFW/glfw3.h>
 
 #include <spdlog/spdlog.h>
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "App.h"
+
+static const char *GLSL_VERSION = "#version 130";
+#define OPENGL_VERSION_MAJOR 3
+#define OPENGL_VERSION_MINOR 0
 
 using namespace engine;
 
@@ -24,21 +31,38 @@ auto App::getInstance() -> App &
     return *s_instance;
 }
 
+static bool showDemo = true;
+
 void App::exec()
 {
     setupWindow();
 
     while (!glfwWindowShouldClose(m_window))
     {
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow(&showDemo);
+
+        ImGui::Render();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 //        if (s_scene)
 //            s_scene->render();
 
         glfwSwapBuffers(m_window);
-        glfwPollEvents();
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
@@ -49,6 +73,9 @@ void App::setupWindow()
         spdlog::critical("glfwInit() failed");
         assert(false);
     }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
 
     auto monitor = m_fullscreen ? glfwGetPrimaryMonitor() : nullptr;
     if (monitor != nullptr)
@@ -72,6 +99,17 @@ void App::setupWindow()
     glfwMakeContextCurrent(m_window);
     spdlog::debug("created window with size ({}, {})", m_width, m_height);
 
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+    ImGui_ImplOpenGL3_Init(GLSL_VERSION);
+
+    spdlog::debug("ImGui setup complete");
+
+    spdlog::debug("initializing GLEW (OpenGL)");
     auto err = glewInit();
     if (err != GLEW_OK)
     {
