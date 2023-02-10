@@ -1,4 +1,6 @@
 #include <cassert>
+#include <chrono>
+#include <thread>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,6 +9,7 @@
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
+#include <sched.h>
 
 #include "App.h"
 #include "OverlayWindow.h"
@@ -20,7 +23,7 @@ using namespace engine;
 App *App::s_instance = nullptr;
 
 App::App()
-        : m_width(1024), m_height(768), m_windowTitle("Ulmer 3D Game Engine")
+        : m_targetFramesPerSecond(30.0f), m_width(1024), m_height(768), m_windowTitle("Ulmer 3D Game Engine")
 {
     assert(s_instance == nullptr);
     s_instance = this;
@@ -38,27 +41,16 @@ void App::exec()
 {
     setupWindow();
 
-    OverlayWindow debugOverlay;
-
+    auto lastTimestamp = std::chrono::system_clock::now();
     while (!glfwWindowShouldClose(m_window))
     {
-        glfwPollEvents();
+        update();
+        render();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        debugOverlay.render();
-
-        ImGui::Render();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-//        if (s_scene)
-//            s_scene->render();
-
-        glfwSwapBuffers(m_window);
+        const auto targetFrameDuration = std::chrono::nanoseconds((long) (1000000000 / m_targetFramesPerSecond));
+        const auto nextFrameTime = lastTimestamp + targetFrameDuration;
+        std::this_thread::sleep_until(nextFrameTime);
+        lastTimestamp += targetFrameDuration;
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -139,5 +131,33 @@ void App::resized(int width, int height)
     m_height = height;
 
     // s_scene->resized(s_width, s_height);
+}
+
+void App::update()
+{
+    glfwPollEvents();
+}
+
+void App::render()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    debugOverlay.render();
+
+    ImGui::Begin("FPS Selector");
+    ImGui::SliderFloat("FPS", &m_targetFramesPerSecond, 5, 60);
+    ImGui::End();
+
+    ImGui::ShowMetricsWindow(nullptr);
+    ImGui::ShowStyleEditor(nullptr);
+
+    ImGui::Render();
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
+    glfwSwapBuffers(m_window);
 }
 

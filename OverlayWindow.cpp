@@ -19,5 +19,9 @@ OverlayWindow::OverlayWindow()
 
 void OverlayWindow::renderContents()
 {
+    auto &io = ImGui::GetIO();
+
     ImGui::Text("Ulmer 3D Game Engine v0.1-dev [Debug] (commit 28398589)");
+    ImGui::Text("Dear ImGui %s", ImGui::GetVersion());
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 }
