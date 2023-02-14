@@ -1,0 +1,17 @@
+#pragma once
+
+namespace Engine {
+    namespace BuildInfo {
+        const char *NAME = "@CMAKE_PROJECT_NAME@";
+        const char *FULL_NAME = "Ulmer 3D Game Engine";
+        const char *VERSION = "v@CMAKE_PROJECT_VERSION@";
+        const char *BUILD_TYPE = "@CMAKE_BUILD_TYPE@";
+        const char *AUTHORS = "Alexander Ulmer";
+        const char *BUILD_DATE = "@BUILD_DATE@";
+        const char *BUILD_COMMIT = "@COMMIT_HASH@";
+
+//        static constexpr bool DebugModeEnabled = static_cast<bool>(DEBUG_MODE_ENABLED);
+//        static constexpr bool ProfilingEnabled = static_cast<bool>(ENGINE_PROFILE_ENABLED);
+//        static constexpr bool EngineImplementation = static_cast<bool>(ENGINE_IMPL_ENABLED);
+    }
+}
