@@ -1,9 +1,12 @@
 #pragma once
 
+#include <list>
 #include <string>
+#include <memory>
 
-#include <GLFW/glfw3.h>
 #include "OverlayWindow.h"
+
+typedef struct GLFWwindow GLFWwindow;
 
 namespace engine {
 
@@ -15,26 +18,22 @@ namespace engine {
 
         ~App() = default;
 
-        void exec();
-
         static auto getInstance() -> App &;
 
-        void setWindowTitle(const std::string &title)
-        {
-            m_windowTitle = title;
-        }
+        /**
+         * The exec() method executes the mainloop (i.e. starts the application)
+         */
+        void exec();
 
-        void setFullscreen()
-        {
-            m_fullscreen = true;
-        }
-
-    protected:
-        virtual void onInit()
-        {}
-
-        virtual void onExit()
-        {}
+        /**
+         * The addWindow() method adds a GUI Window to the list of objects
+         * that will get rendered/updated by the mainloop. The shared_ptr
+         * to the object will be dropped from the list once the window's
+         * closed() function returns true.
+         *
+         * @param window the "Window" object to render and update
+         */
+        void addWindow(std::shared_ptr<Window> window);
 
     private:
         void setupWindow();
@@ -43,17 +42,25 @@ namespace engine {
 
         void render();
 
+        void renderScene();
+
+        void renderImGui();
+
+        void onResize(int width, int height);
+
         static void glfwResizeCallback(GLFWwindow *window, int width, int height);
 
-        void resized(int width, int height);
-
-        OverlayWindow debugOverlay;
-        float m_targetFramesPerSecond;
+    private:
         static App *s_instance;
+        float m_targetFramesPerSecond;
+
         GLFWwindow *m_window;
         int m_width, m_height;
         bool m_fullscreen;
+
         std::string m_windowTitle;
+        OverlayWindow debugOverlay;
+        std::list<std::shared_ptr<Window>> m_windows;
     };
 
 }

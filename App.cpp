@@ -4,12 +4,11 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <spdlog/spdlog.h>
+
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
-#include <sched.h>
 
 #include "App.h"
 #include "OverlayWindow.h"
@@ -23,7 +22,8 @@ using namespace engine;
 App *App::s_instance = nullptr;
 
 App::App()
-        : m_targetFramesPerSecond(30.0f), m_width(1024), m_height(768), m_windowTitle("Ulmer 3D Game Engine")
+        : m_targetFramesPerSecond(30.0f), m_width(1024), m_height(768), m_fullscreen(false),
+          m_windowTitle("Ulmer 3D Game Engine")
 {
     assert(s_instance == nullptr);
     s_instance = this;
@@ -35,34 +35,11 @@ auto App::getInstance() -> App &
     return *s_instance;
 }
 
-static bool showDemo = true;
-
-void App::exec()
-{
-    setupWindow();
-
-    auto lastTimestamp = std::chrono::system_clock::now();
-    while (!glfwWindowShouldClose(m_window))
-    {
-        update();
-        render();
-
-        const auto targetFrameDuration = std::chrono::nanoseconds((long) (1000000000 / m_targetFramesPerSecond));
-        const auto nextFrameTime = lastTimestamp + targetFrameDuration;
-        std::this_thread::sleep_until(nextFrameTime);
-        lastTimestamp += targetFrameDuration;
-    }
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
-}
 
 void App::setupWindow()
 {
+    // TODO: I don't like this large method. Split up in smaller parts, move to other files...?
+
     if (!glfwInit())
     {
         spdlog::critical("glfwInit() failed");
@@ -72,6 +49,7 @@ void App::setupWindow()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
 
+    spdlog::debug("fullscreen: {}", m_fullscreen ? "yes" : "no");
     auto monitor = m_fullscreen ? glfwGetPrimaryMonitor() : nullptr;
     if (monitor != nullptr)
     {
@@ -116,21 +94,31 @@ void App::setupWindow()
 
     spdlog::debug("enabling GL_DEPTH_TEST");
     glEnable(GL_DEPTH_TEST);
+    glClearColor(0.00, 0.8, 1.0, 1.0); // Sky blue
 }
 
-void App::glfwResizeCallback(GLFWwindow *window, int width, int height)
+void App::exec()
 {
-    (void) window;
-    App::getInstance().resized(width, height);
-    glViewport(0, 0, width, height);
-}
+    setupWindow();
 
-void App::resized(int width, int height)
-{
-    m_width = width;
-    m_height = height;
+    auto lastTimestamp = std::chrono::system_clock::now();
+    while (!glfwWindowShouldClose(m_window))
+    {
+        update();
+        render();
 
-    // s_scene->resized(s_width, s_height);
+        const auto targetFrameDuration = std::chrono::nanoseconds((long) (1000000000 / m_targetFramesPerSecond));
+        const auto nextFrameTime = lastTimestamp + targetFrameDuration;
+        std::this_thread::sleep_until(nextFrameTime);
+        lastTimestamp += targetFrameDuration;
+    }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
 }
 
 void App::update()
@@ -140,24 +128,68 @@ void App::update()
 
 void App::render()
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    renderScene();
+    renderImGui();
+
+    glfwSwapBuffers(m_window);
+}
+
+void App::renderScene()
+{
+    // TODO
+}
+
+void App::renderImGui()
+{
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    debugOverlay.render();
+    auto window = m_windows.begin();
+    while (window != m_windows.end())
+    {
+        assert(*window != nullptr);
+        (*window)->render();
 
+        if ((*window)->closed())
+        {
+            window = m_windows.erase(window);
+        } else
+        {
+            window++;
+        }
+    }
+
+    // === HACK BEGIN
+    debugOverlay.render();
     ImGui::Begin("FPS Selector");
     ImGui::SliderFloat("FPS", &m_targetFramesPerSecond, 5, 60);
     ImGui::End();
-
-    ImGui::ShowMetricsWindow(nullptr);
-    ImGui::ShowStyleEditor(nullptr);
+    // === HACK END
 
     ImGui::Render();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    
-    glfwSwapBuffers(m_window);
 }
 
+void App::addWindow(std::shared_ptr<Window> window)
+{
+    m_windows.push_back(window);
+}
+
+void App::onResize(int width, int height)
+{
+    m_width = width;
+    m_height = height;
+
+    // s_scene->resized(s_width, s_height);
+}
+
+void App::glfwResizeCallback(GLFWwindow *window, int width, int height)
+{
+    (void) window;
+    App::getInstance().onResize(width, height);
+    glViewport(0, 0, width, height);
+}

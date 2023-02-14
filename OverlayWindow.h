@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GuiWindow.h"
+#include "Window.h"
 
-class OverlayWindow : public GuiWindow
+class OverlayWindow : public Window
 {
 public:
     OverlayWindow();

@@ -12,7 +12,7 @@ static const auto OVERLAY_FLAGS = ImGuiWindowFlags_NoDecoration |
                                   ImGuiWindowFlags_NoNav;
 
 OverlayWindow::OverlayWindow()
-        : GuiWindow("overlay", OVERLAY_FLAGS)
+        : Window("overlay", OVERLAY_FLAGS)
 {
 
 }
