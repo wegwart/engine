@@ -11,6 +11,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "App.h"
+#include "DemoWindow.h"
 #include "OverlayWindow.h"
 
 static const char *GLSL_VERSION = "#version 130";
@@ -166,6 +167,10 @@ void App::renderImGui()
     debugOverlay.render();
     ImGui::Begin("FPS Selector");
     ImGui::SliderFloat("FPS", &m_targetFramesPerSecond, 5, 60);
+    if (ImGui::Button("Show ImGui Demo Window"))
+    {
+        addWindow(std::make_shared<DemoWindow>());
+    }
     ImGui::End();
     // === HACK END
 
