@@ -29,7 +29,7 @@ configure_file(
         ${CONFIG_HEADER}
 )
 
-add_executable(engine ${CONFIG_HEADER} main.cpp App.h App.cpp Window.cpp Window.h OverlayWindow.cpp OverlayWindow.h DemoWindow.cpp DemoWindow.h config.h.in)
+add_executable(engine ${CONFIG_HEADER} main.cpp App.h App.cpp Window.cpp Window.h OverlayWindow.cpp OverlayWindow.h DemoWindow.cpp DemoWindow.h config.h.in Scene.cpp Scene.h renderer/VertexBuffer.cpp renderer/VertexBuffer.h renderer/Shader.cpp renderer/Shader.h renderer/Renderer.cpp renderer/Renderer.h renderer/ShaderProgram.cpp renderer/ShaderProgram.h)
 target_include_directories(engine PRIVATE
         /usr/include/imgui
         ${PROJECT_BINARY_DIR}/src

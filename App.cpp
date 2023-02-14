@@ -11,14 +11,16 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "App.h"
+#include "Scene.h"
 #include "DemoWindow.h"
 #include "OverlayWindow.h"
+#include "renderer/Renderer.h"
 
 static const char *GLSL_VERSION = "#version 130";
 #define OPENGL_VERSION_MAJOR 3
 #define OPENGL_VERSION_MINOR 0
 
-using namespace engine;
+using namespace Engine;
 
 App *App::s_instance = nullptr;
 
@@ -28,6 +30,8 @@ App::App()
 {
     assert(s_instance == nullptr);
     s_instance = this;
+
+    setupWindow();
 }
 
 auto App::getInstance() -> App &
@@ -47,8 +51,8 @@ void App::setupWindow()
         assert(false);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
 
     spdlog::debug("fullscreen: {}", m_fullscreen ? "yes" : "no");
     auto monitor = m_fullscreen ? glfwGetPrimaryMonitor() : nullptr;
@@ -73,7 +77,6 @@ void App::setupWindow()
     glfwMakeContextCurrent(m_window);
     spdlog::debug("created window with size ({}, {})", m_width, m_height);
 
-
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -81,14 +84,8 @@ void App::setupWindow()
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-    spdlog::debug("ImGui setup complete");
-
-    spdlog::debug("initializing GLEW (OpenGL)");
-    auto err = glewInit();
-    if (err != GLEW_OK)
+    if (!Renderer::init())
     {
-        spdlog::critical("glewInit() failed (GLenum = {})", err);
-
         glfwTerminate();
         assert(false);
     }
@@ -100,8 +97,6 @@ void App::setupWindow()
 
 void App::exec()
 {
-    setupWindow();
-
     auto lastTimestamp = std::chrono::system_clock::now();
     while (!glfwWindowShouldClose(m_window))
     {
@@ -125,6 +120,11 @@ void App::exec()
 void App::update()
 {
     glfwPollEvents();
+
+    if (m_scene)
+    {
+        m_scene->update();
+    }
 }
 
 void App::render()
@@ -139,7 +139,10 @@ void App::render()
 
 void App::renderScene()
 {
-    // TODO
+    if (m_scene)
+    {
+        m_scene->render();
+    }
 }
 
 void App::renderImGui()
@@ -197,4 +200,9 @@ void App::glfwResizeCallback(GLFWwindow *window, int width, int height)
     (void) window;
     App::getInstance().onResize(width, height);
     glViewport(0, 0, width, height);
+}
+
+void App::setScene(std::shared_ptr<Scene> scene)
+{
+    m_scene = scene;
 }

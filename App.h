@@ -8,7 +8,9 @@
 
 typedef struct GLFWwindow GLFWwindow;
 
-namespace engine {
+namespace Engine {
+
+    class Scene;
 
     class App
     {
@@ -16,7 +18,7 @@ namespace engine {
     public:
         App();
 
-        ~App() = default;
+        virtual ~App() = default;
 
         static auto getInstance() -> App &;
 
@@ -35,6 +37,13 @@ namespace engine {
          */
         void addWindow(std::shared_ptr<Window> window);
 
+        /**
+         * The setScene() method ...
+         *
+         * @param scene A shared_ptr to the Scene object
+         */
+        void setScene(std::shared_ptr<Scene> scene);
+
     private:
         void setupWindow();
 
@@ -52,6 +61,7 @@ namespace engine {
 
     private:
         static App *s_instance;
+        std::shared_ptr<Scene> m_scene;
         float m_targetFramesPerSecond;
 
         GLFWwindow *m_window;
