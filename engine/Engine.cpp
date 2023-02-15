@@ -12,10 +12,10 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include "Engine.h"
-#include "Scene.h"
-#include "Window.h"
-#include "renderer/Renderer.h"
+#include "include/engine/Engine.h"
+#include "include/engine/Scene.h"
+#include "include/engine/Window.h"
+#include "engine/Renderer.h"
 
 namespace Engine {
 

@@ -2,12 +2,12 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-#include "Engine.h"
-#include "Scene.h"
-#include "Window.h"
-#include "renderer/Shader.h"
-#include "renderer/Camera.h"
-#include "renderer/ShaderProgram.h"
+#include <engine/Engine.h>
+#include <engine/Scene.h>
+#include <engine/Window.h>
+#include <engine/Shader.h>
+#include <engine/Camera.h>
+#include <engine/ShaderProgram.h>
 
 class CameraConfigWindow : public Engine::Window
 {

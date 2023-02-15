@@ -1,12 +1,8 @@
-//
-// Created by alex on 2/14/23.
-//
-
-#include "Shader.h"
-#include <GL/glew.h>
-#include <spdlog/spdlog.h>
 #include <fstream>
 #include <sstream>
+#include <GL/glew.h>
+#include <spdlog/spdlog.h>
+#include <engine/Shader.h>
 
 using namespace Engine::Renderer;
 

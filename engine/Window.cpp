@@ -1,5 +1,5 @@
-#include "Engine.h"
-#include "Window.h"
+#include "include/engine/Engine.h"
+#include "include/engine/Window.h"
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 

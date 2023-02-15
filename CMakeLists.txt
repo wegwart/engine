@@ -25,13 +25,37 @@ execute_process(
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+        ${CMAKE_CURRENT_SOURCE_DIR}/engine/config.h.in
         ${CONFIG_HEADER}
 )
 
-add_executable(engine ${CONFIG_HEADER} DemoScene.cpp Engine.h Engine.cpp Window.cpp Window.h OverlayWindow.cpp OverlayWindow.h DemoWindow.cpp DemoWindow.h config.h.in Scene.cpp Scene.h renderer/VertexBuffer.cpp renderer/VertexBuffer.h renderer/Shader.cpp renderer/Shader.h renderer/Renderer.cpp renderer/Renderer.h renderer/ShaderProgram.cpp renderer/ShaderProgram.h renderer/Camera.cpp renderer/Camera.h)
+add_executable(engine
+        ${CONFIG_HEADER}
+        DemoScene.cpp
+        engine/include/engine/Engine.h
+        engine/Engine.cpp
+        engine/Window.cpp
+        engine/include/engine/Window.h
+        engine/OverlayWindow.cpp
+        engine/include/engine/OverlayWindow.h
+        engine/DemoWindow.cpp
+        engine/include/engine/DemoWindow.h
+        engine/Scene.cpp
+        engine/include/engine/Scene.h
+        engine/renderer/VertexBuffer.cpp
+        engine/include/engine/VertexBuffer.h
+        engine/renderer/Shader.cpp
+        engine/include/engine/Shader.h
+        engine/renderer/Renderer.cpp
+        engine/include/engine/Renderer.h
+        engine/renderer/ShaderProgram.cpp
+        engine/include/engine/ShaderProgram.h
+        engine/renderer/Camera.cpp
+        engine/include/engine/Camera.h
+        )
 target_include_directories(engine PRIVATE
         /usr/include/imgui
+        ${PROJECT_SOURCE_DIR}/engine/include
         ${PROJECT_BINARY_DIR}/src
         )
 target_compile_options(engine PRIVATE -pedantic -Wall -Wextra -Werror)

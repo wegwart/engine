@@ -1,7 +1,3 @@
-//
-// Created by alex on 2/15/23.
-//
-
 #pragma once
 
 #include <glm/glm.hpp>

@@ -1,11 +1,6 @@
-//
-// Created by alex on 2/14/23.
-//
-
-#include "Engine.h"
-#include "Scene.h"
-#include "renderer/Camera.h"
-#include <glm/gtx/transform.hpp>
+#include <engine/Engine.h>
+#include <engine/Camera.h>
+#include <engine/Scene.h>
 
 using namespace Engine;
 

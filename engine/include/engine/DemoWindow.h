@@ -1,10 +1,6 @@
-//
-// Created by alex on 2/14/23.
-//
-
 #pragma once
 
-#include "Window.h"
+#include <engine/Window.h>
 
 namespace Engine {
     class DemoWindow : public Window

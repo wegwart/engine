@@ -1,9 +1,5 @@
-//
-// Created by alex on 2/15/23.
-//
-
-#include "Camera.h"
 #include <glm/gtx/transform.hpp>
+#include <engine/Camera.h>
 
 using namespace Engine::Renderer;
 
