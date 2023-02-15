@@ -2,11 +2,14 @@ cmake_minimum_required(VERSION 3.18)
 
 project(ulmer_engine VERSION 0.1)
 
+add_subdirectory(lib)
+
 # Default build type: Release
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")
 endif ()
 message(STATUS "${CMAKE_PROJECT_NAME} v${CMAKE_PROJECT_VERSION} [${CMAKE_BUILD_TYPE}]")
+
 
 option(ENABLE_DEBUG_OVERLAY "Enable debug info overlay" ON)
 option(ENABLE_IMGUI_DEMO "Enable ImGui Demo Window" ON)
@@ -59,4 +62,4 @@ target_include_directories(engine PRIVATE
         ${PROJECT_BINARY_DIR}/src
         )
 target_compile_options(engine PRIVATE -pedantic -Wall -Wextra -Werror)
-target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb)
+target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb ${LIBS_LINK})
