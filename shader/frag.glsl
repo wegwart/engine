@@ -1,8 +1,9 @@
 #version 330 core
 
+in vec4 triangleColor;
 out vec4 fragColor;
 
 void main()
 {
-    fragColor = vec4(0.8f, 0.8f, 0.8f, 1.0f);
+    fragColor = triangleColor;
 }

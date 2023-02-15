@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "OverlayWindow.h"
+#include <glm/glm.hpp>
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -57,11 +58,14 @@ namespace Engine {
 
         void onResize(int width, int height);
 
+        void updateProjectionMatrix();
+
         static void glfwResizeCallback(GLFWwindow *window, int width, int height);
 
     private:
         static App *s_instance;
         std::shared_ptr<Scene> m_scene;
+        glm::mat4 m_projectionMatrix;
         float m_targetFramesPerSecond;
 
         GLFWwindow *m_window;

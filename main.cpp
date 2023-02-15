@@ -1,10 +1,12 @@
 #include "App.h"
 #include "Scene.h"
+#include "Window.h"
+#include "renderer/Camera.h"
 #include <spdlog/spdlog.h>
+#include <imgui/imgui.h>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/matrix_transform_2d.hpp>
 
 #include "renderer/Shader.h"
 #include "renderer/ShaderProgram.h"
@@ -15,35 +17,89 @@ public:
     MySandbox() = default;
 };
 
-class DemoScene : public Engine::Scene
+class CameraConfigWindow : public Window
 {
 public:
-    DemoScene()
-            : m_angle(0.0)
-    {
+    CameraConfigWindow()
+            : Window("Camera Config"), x(0.0), y(0.0), z(1.0)
+    {}
 
+protected:
+    void renderContents() override
+    {
+        ImGui::Text("Camera Position:");
+        ImGui::SliderFloat("X", &x, -10, 10);
+        ImGui::SliderFloat("Y", &y, -10, 10);
+        ImGui::SliderFloat("Z", &z, -10, 10);
+    }
+
+public:
+    float x, y, z;
+};
+
+class DemoScene : public Engine::Scene
+{
+private:
+    Engine::Renderer::ShaderProgram floorShader;
+    unsigned int mvpUniform;
+    std::shared_ptr<CameraConfigWindow> configWindow;
+
+public:
+    DemoScene()
+            : Scene(std::make_shared<Engine::Renderer::Camera>(glm::vec3(0.0, 3.0, 5.0))),
+              configWindow(std::make_shared<CameraConfigWindow>()), m_angle(0.0)
+    {
+        Engine::App::getInstance().addWindow(configWindow);
+        Engine::Renderer::Shader vertexShader("../shader/vert.glsl",
+                                              Engine::Renderer::Shader::ShaderType::VertexShader);
+        auto success = vertexShader.compile();
+        assert(success == true);
+        floorShader.addShader(vertexShader);
+
+        Engine::Renderer::Shader fragShader("../shader/frag.glsl",
+                                            Engine::Renderer::Shader::ShaderType::FragmentShader);
+        success = fragShader.compile();
+        assert(success == true);
+        floorShader.addShader(fragShader);
+
+        floorShader.link();
+        floorShader.bind();
+
+        mvpUniform = floorShader.getUniformByName("u_MVP");
     }
 
     void update() override
     {
         m_angle += 0.1;
+        getCamera()->setCameraPosition(glm::vec3(configWindow->x, configWindow->y, configWindow->z));
     }
 
-    void render() override
+    void render(const glm::mat4 &projectionMatrix) override
     {
-        auto p1 = glm::vec3(-0.5f, -0.5f, 1.0f);
-        auto p2 = glm::vec3(0.0f, 0.5f, 1.0f);
-        auto p3 = glm::vec3(0.5f, -0.5f, 1.0f);
+        // Create a tiled floor that is spans a square area of 100 m2
+        // For that we just generate some vertices and let a custom
+        // geometry shader expand this to a proper triangle mesh.
 
-        auto rotmat = glm::rotate(glm::mat3(1.0f), m_angle);
-        p1 = rotmat * p1;
-        p2 = rotmat * p2;
-        p3 = rotmat * p3;
+        floorShader.bind();
+
+        floorShader.setUniform(mvpUniform, projectionMatrix * getViewMatrix());
 
         glBegin(GL_TRIANGLES);
-        glVertex2f(p1.x, p2.y);
-        glVertex2f(p2.x, p2.y);
-        glVertex2f(p3.x, p3.y);
+        for (int x = -50; x < 50; x++)
+        {
+            for (int y = -50; y < 50; y++)
+            {
+                float color = ((x % 2) * (x % 2) == (y % 2) * (y % 2)) ? 1.0 : -1.0;
+
+                glVertex3f(x, y, color);
+                glVertex3f(x + 1, y, color);
+                glVertex3f(x + 1, y + 1, color);
+
+                glVertex3f(x, y, color);
+                glVertex3f(x, y + 1, color);
+                glVertex3f(x + 1, y + 1, color);
+            }
+        }
         glEnd();
     }
 

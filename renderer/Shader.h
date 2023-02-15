@@ -22,6 +22,8 @@ namespace Engine {
                 FragmentShader = GL_FRAGMENT_SHADER,
             };
 
+            Shader() = delete;
+
             explicit Shader(const std::string &filename, ShaderType shaderType);
 
             Shader(const Shader &) = delete;

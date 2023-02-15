@@ -27,7 +27,6 @@ void Window::renderWindow(bool &isVisible)
 {
     if (isVisible)
     {
-        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
         ImGui::Begin(m_windowTitle.c_str(), &isVisible, m_flags);
         renderContents();
         ImGui::End();

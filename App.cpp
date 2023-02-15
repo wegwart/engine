@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
+#include <glm/gtx/transform.hpp>
 
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
@@ -74,6 +75,7 @@ void App::setupWindow()
 
     glfwGetWindowSize(m_window, &m_width, &m_height);
     glfwSetWindowSizeCallback(m_window, &App::glfwResizeCallback);
+    updateProjectionMatrix();
     glfwMakeContextCurrent(m_window);
     spdlog::debug("created window with size ({}, {})", m_width, m_height);
 
@@ -141,7 +143,7 @@ void App::renderScene()
 {
     if (m_scene)
     {
-        m_scene->render();
+        m_scene->render(m_projectionMatrix);
     }
 }
 
@@ -192,7 +194,14 @@ void App::onResize(int width, int height)
     m_width = width;
     m_height = height;
 
-    // s_scene->resized(s_width, s_height);
+    updateProjectionMatrix();
+}
+
+void App::updateProjectionMatrix()
+{
+    m_projectionMatrix = glm::perspective(
+            glm::radians(45.0f), (float) m_width / (float) m_height, 1.0f, 100.0f
+    );
 }
 
 void App::glfwResizeCallback(GLFWwindow *window, int width, int height)
