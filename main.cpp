@@ -21,7 +21,7 @@ class CameraConfigWindow : public Window
 {
 public:
     CameraConfigWindow()
-            : Window("Camera Config"), x(0.0), y(0.0), z(1.0)
+            : Window("Camera Config"), x(10.0), y(0.0), z(1.0)
     {}
 
 protected:

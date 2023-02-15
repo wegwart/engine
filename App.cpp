@@ -52,6 +52,7 @@ void App::setupWindow()
         assert(false);
     }
 
+    glfwWindowHint(GLFW_SAMPLES, 4);
     //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
     //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
 
@@ -92,7 +93,10 @@ void App::setupWindow()
         assert(false);
     }
 
-    spdlog::debug("enabling GL_DEPTH_TEST");
+    spdlog::debug("enable anti-aliasing (4-sample multisampling)");
+    glEnable(GL_MULTISAMPLE);
+
+    spdlog::debug("enabling GL_DEPTH_TEST, GL_MULTISAMPLE");
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.00, 0.8, 1.0, 1.0); // Sky blue
 }
