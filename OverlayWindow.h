@@ -2,11 +2,13 @@
 
 #include "Window.h"
 
-class OverlayWindow : public Window
-{
-public:
-    OverlayWindow();
+namespace Engine {
+    class OverlayWindow : public Window
+    {
+    public:
+        OverlayWindow();
 
-protected:
-    void renderContents() override;
-};
+    protected:
+        void renderContents() override;
+    };
+}

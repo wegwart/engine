@@ -1,23 +1,15 @@
-#include "App.h"
-#include "Scene.h"
-#include "Window.h"
-#include "renderer/Camera.h"
-#include <spdlog/spdlog.h>
 #include <imgui/imgui.h>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#include "Engine.h"
+#include "Scene.h"
+#include "Window.h"
 #include "renderer/Shader.h"
+#include "renderer/Camera.h"
 #include "renderer/ShaderProgram.h"
 
-class MySandbox : public Engine::App
-{
-public:
-    MySandbox() = default;
-};
-
-class CameraConfigWindow : public Window
+class CameraConfigWindow : public Engine::Window
 {
 public:
     CameraConfigWindow()
@@ -28,9 +20,9 @@ protected:
     void renderContents() override
     {
         ImGui::Text("Camera Position:");
-        ImGui::SliderFloat("X", &x, -10, 10);
-        ImGui::SliderFloat("Y", &y, -10, 10);
-        ImGui::SliderFloat("Z", &z, -10, 10);
+        ImGui::SliderFloat("X", &x, -80.0, 80.0);
+        ImGui::SliderFloat("Y", &y, -80.0, 80.0);
+        ImGui::SliderFloat("Z", &z, 1.0, 100.0);
     }
 
 public:
@@ -47,9 +39,8 @@ private:
 public:
     DemoScene()
             : Scene(std::make_shared<Engine::Renderer::Camera>(glm::vec3(0.0, 3.0, 5.0))),
-              configWindow(std::make_shared<CameraConfigWindow>()), m_angle(0.0)
+              configWindow(std::make_shared<CameraConfigWindow>())
     {
-        Engine::App::getInstance().addWindow(configWindow);
         Engine::Renderer::Shader vertexShader("../shader/vert.glsl",
                                               Engine::Renderer::Shader::ShaderType::VertexShader);
         auto success = vertexShader.compile();
@@ -70,7 +61,6 @@ public:
 
     void update() override
     {
-        m_angle += 0.1;
         getCamera()->setCameraPosition(glm::vec3(configWindow->x, configWindow->y, configWindow->z));
     }
 
@@ -102,30 +92,11 @@ public:
         }
         glEnd();
     }
-
-private:
-    float m_angle;
 };
 
-int main()
-{
-    spdlog::set_level(spdlog::level::debug);
-
-    MySandbox sandbox;
-
-    Engine::Renderer::ShaderProgram shaders;
+namespace EngineApp {
+    void onInit()
     {
-        Engine::Renderer::Shader fragShader("../shader/frag.glsl",
-                                            Engine::Renderer::Shader::ShaderType::FragmentShader);
-        auto success = fragShader.compile();
-        assert(success == true);
-        shaders.addShader(fragShader);
-        shaders.link();
+        Engine::setScene(std::make_shared<DemoScene>());
     }
-    shaders.bind();
-
-    sandbox.setScene(std::make_shared<DemoScene>());
-    sandbox.exec();
-
-    return 0;
 }

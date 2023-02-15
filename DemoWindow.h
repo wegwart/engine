@@ -6,14 +6,15 @@
 
 #include "Window.h"
 
-class DemoWindow : public Window
-{
-public:
-    DemoWindow();
+namespace Engine {
+    class DemoWindow : public Window
+    {
+    public:
+        DemoWindow();
 
-    ~DemoWindow() = default;
+        ~DemoWindow() = default;
 
-protected:
-    void renderWindow(bool &isVisible) final;
-
-};
+    protected:
+        void renderWindow(bool &isVisible) final;
+    };
+}

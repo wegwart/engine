@@ -1,20 +1,19 @@
-//
-// Created by alex on 2/7/23.
-//
-
+#include "Engine.h"
 #include "Window.h"
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 
+using namespace Engine;
+
 Window::Window(const std::string &windowTitle, int flags)
         : m_flags(flags), m_isVisible(true), m_windowTitle(windowTitle)
 {
-    spdlog::debug("Window created (\"{}\")", m_windowTitle);
+    _internal::registerWindow(this);
 }
 
 Window::~Window()
 {
-    spdlog::debug("Window deleted (\"{}\")", m_windowTitle);
+    _internal::unregisterWindow(this);
 }
 
 

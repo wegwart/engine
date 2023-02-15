@@ -6,6 +6,8 @@
 #include <config.h>
 #include <imgui.h>
 
+using namespace Engine;
+
 static const auto OVERLAY_FLAGS = ImGuiWindowFlags_NoDecoration |
                                   ImGuiWindowFlags_AlwaysAutoResize |
                                   ImGuiWindowFlags_NoSavedSettings |

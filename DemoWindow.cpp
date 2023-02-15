@@ -6,6 +6,7 @@
 #include <imgui/imgui.h>
 #include <spdlog/spdlog.h>
 
+using namespace Engine;
 
 DemoWindow::DemoWindow()
         : Window("ImGui Demo Window")

@@ -4,10 +4,14 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace Engine {
     namespace Renderer {
 
-        bool init();
+        void clear();
+
+        void setClearColor(glm::vec3 color);
 
     } // Engine
 } // Renderer
