@@ -33,6 +33,5 @@ namespace Engine {
             glm::mat4 m_viewMatrix;
             glm::vec3 m_cameraPosition, m_lookAtPoint, m_upVector;
         };
-
     } // Engine
 } // Renderer

@@ -15,6 +15,5 @@ namespace Engine {
         private:
             unsigned int m_vertexArrayId, m_vertexBufferId, m_indexBufferId;
         };
-
     } // Engine
 } // Renderer

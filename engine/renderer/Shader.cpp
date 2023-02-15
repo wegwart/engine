@@ -7,7 +7,8 @@
 using namespace Engine::Renderer;
 
 Shader::Shader(const std::string &filename, ShaderType shaderType)
-        : m_filename(filename), m_id(glCreateShader(shaderType))
+        : m_filename(filename)
+          , m_id(glCreateShader(shaderType))
 {
 }
 

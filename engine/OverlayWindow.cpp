@@ -14,7 +14,6 @@ static const auto OVERLAY_FLAGS = ImGuiWindowFlags_NoDecoration |
 OverlayWindow::OverlayWindow()
         : Window("overlay", OVERLAY_FLAGS)
 {
-
 }
 
 void OverlayWindow::renderContents()

@@ -4,8 +4,9 @@
 using namespace Engine::Renderer;
 
 Camera::Camera(glm::vec3 cameraPosition, glm::vec3 lookAtPoint, glm::vec3 upVector)
-        : m_cameraPosition(cameraPosition),
-          m_lookAtPoint(lookAtPoint), m_upVector(upVector)
+        : m_cameraPosition(cameraPosition)
+          , m_lookAtPoint(lookAtPoint)
+          , m_upVector(upVector)
 {
     updateViewMatrix();
 }

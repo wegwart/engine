@@ -224,5 +224,4 @@ namespace Engine {
             s_guiWindows.remove(window);
         }
     }
-
 } // Engine

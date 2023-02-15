@@ -1,7 +1,6 @@
 #include <GL/glew.h>
 #include <engine/VertexBuffer.h>
 
-
 using namespace Engine::Renderer;
 
 VertexBuffer::VertexBuffer()

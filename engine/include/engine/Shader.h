@@ -35,6 +35,5 @@ namespace Engine {
             std::string m_filename;
             unsigned int m_id;
         };
-
     } // Engine
 } // Renderer

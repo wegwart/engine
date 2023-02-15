@@ -29,6 +29,5 @@ namespace Engine {
         private:
             unsigned int m_id;
         };
-
     } // Engine
 } // Renderer

@@ -28,5 +28,4 @@ namespace Engine {
         bool m_isVisible;
         std::string m_windowTitle;
     };
-
 }

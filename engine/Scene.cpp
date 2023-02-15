@@ -7,7 +7,6 @@ using namespace Engine;
 Scene::Scene(std::shared_ptr<Renderer::Camera> camera)
         : m_camera(camera)
 {
-
 }
 
 const glm::mat4 &Scene::getViewMatrix() const

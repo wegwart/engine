@@ -6,7 +6,9 @@
 using namespace Engine;
 
 Window::Window(const std::string &windowTitle, int flags)
-        : m_flags(flags), m_isVisible(true), m_windowTitle(windowTitle)
+        : m_flags(flags)
+          , m_isVisible(true)
+          , m_windowTitle(windowTitle)
 {
     _internal::registerWindow(this);
 }

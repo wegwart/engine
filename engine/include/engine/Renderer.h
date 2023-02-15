@@ -8,6 +8,5 @@ namespace Engine {
         void clear();
 
         void setClearColor(glm::vec3 color);
-
     } // Engine
 } // Renderer

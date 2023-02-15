@@ -13,7 +13,10 @@ class CameraConfigWindow : public Engine::Window
 {
 public:
     CameraConfigWindow()
-            : Window("Camera Config"), x(10.0), y(0.0), z(1.0)
+            : Window("Camera Config")
+              , x(10.0)
+              , y(0.0)
+              , z(1.0)
     {}
 
 protected:
@@ -38,8 +41,8 @@ private:
 
 public:
     DemoScene()
-            : Scene(std::make_shared<Engine::Renderer::Camera>(glm::vec3(0.0, 3.0, 5.0))),
-              configWindow(std::make_shared<CameraConfigWindow>())
+            : Scene(std::make_shared<Engine::Renderer::Camera>(glm::vec3(0.0, 3.0, 5.0)))
+              , configWindow(std::make_shared<CameraConfigWindow>())
     {
         Engine::Renderer::Shader vertexShader("../shader/vert.glsl",
                                               Engine::Renderer::Shader::ShaderType::VertexShader);
