@@ -7,6 +7,7 @@
 #include <engine/Scene.h>
 #include <engine/Window.h>
 #include <engine/Camera.h>
+#include <engine/VertexBuffer.h>
 #include <engine/ShaderProgram.h>
 
 namespace EngineApp {
@@ -66,6 +67,40 @@ namespace EngineApp {
             // after the shader program has been linked we query the ID
             // of the u_MVP uniform so we can upload the MVP matrix later...
             u_mvp = m_gridFloorShaderProgram.getUniformByName("u_MVP");
+
+            // We want to render a tiled floor that spans a square area of 100 m2. To do
+            // that we create a vertex buffer here in the constructor and fill it with
+            // the vertices that make up our grid. We also use an index buffer to reduce
+            // the amount of vertices in our vertex buffer.
+            std::vector<glm::vec3> vertices;
+            std::vector<unsigned int> indices;
+            unsigned int currentIndex = 0;
+            for (int x = -50; x <= 50; x++)
+            {
+                for (int y = -50; y <= 50; y++)
+                {
+                    vertices.push_back(glm::vec3(x, y, 0.0));
+
+                    if (x < 50 && y < 50)
+                    {
+                        // first triangle of the quad
+                        indices.push_back(currentIndex);
+                        indices.push_back(currentIndex + 1);
+                        indices.push_back(currentIndex + 101);
+
+                        // second triangle of the quad
+//                        indices.push_back(currentIndex + 1);
+//                        indices.push_back(currentIndex + 101);
+//                        indices.push_back(currentIndex + 102);
+                    }
+
+                    currentIndex += 1;
+                }
+            }
+
+            m_vertexBuffer.setData<glm::vec3>(vertices);
+            m_vertexBuffer.setIndices(indices);
+            m_vertexBuffer.addFloatLayoutAttribute(3);
         }
 
         void update() override
@@ -85,31 +120,13 @@ namespace EngineApp {
             // program on the GPU (model component has been left out for now)
             m_gridFloorShaderProgram.setUniform(u_mvp, projectionMatrix * getViewMatrix());
 
-            // Create a tiled floor that is spans a square area of 100 m2
-            // For that we just generate some vertices and let a custom
-            // geometry shader expand this to a proper triangle mesh.
-
-            glBegin(GL_TRIANGLES);
-            for (int x = -50; x < 50; x++)
-            {
-                for (int y = -50; y < 50; y++)
-                {
-                    float color = ((x % 2) * (x % 2) == (y % 2) * (y % 2)) ? 1.0 : -1.0;
-
-                    glVertex3f(x, y, color);
-                    glVertex3f(x + 1, y, color);
-                    glVertex3f(x + 1, y + 1, color);
-
-                    glVertex3f(x, y, color);
-                    glVertex3f(x, y + 1, color);
-                    glVertex3f(x + 1, y + 1, color);
-                }
-            }
-            glEnd();
+            // Draw contents of the vertex buffer as triangles
+            m_vertexBuffer.drawTriangles();
         }
 
     private:
         unsigned int u_mvp;
+        Engine::Renderer::VertexBuffer m_vertexBuffer;
         Engine::Renderer::ShaderProgram m_gridFloorShaderProgram;
         std::shared_ptr<DemoSceneConfigWindow> config;
     };

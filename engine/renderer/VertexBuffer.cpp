@@ -3,54 +3,62 @@
 
 using namespace Engine::Renderer;
 
-template<typename T>
-VertexBuffer<T>::VertexBuffer()
+VertexBuffer::VertexBuffer()
         : m_indexCount(0)
 {
     glGenVertexArrays(1, &m_vertexArray);
     glGenBuffers(1, &m_vertexBuffer);
     glGenBuffers(1, &m_indexBuffer);
+
+    bind();
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+    unbind();
 }
 
-template<typename T>
-VertexBuffer<T>::~VertexBuffer()
+VertexBuffer::~VertexBuffer()
 {
     glDeleteBuffers(1, &m_vertexBuffer);
     glDeleteBuffers(1, &m_indexBuffer);
     glDeleteVertexArrays(1, &m_vertexArray);
 }
 
-template<typename T>
-void VertexBuffer<T>::renderTriangles()
+void VertexBuffer::drawTriangles()
 {
     bind();
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, nullptr);
     unbind();
 }
 
-template<typename T>
-void VertexBuffer<T>::bind()
+void VertexBuffer::bind()
 {
     glBindVertexArray(m_vertexArray);
 }
 
-template<typename T>
-void VertexBuffer<T>::unbind()
+void VertexBuffer::unbind()
 {
     glBindVertexArray(0);
 }
 
-template<typename T>
-void VertexBuffer<T>::setData(const T *vertices, size_t count)
+void VertexBuffer::setRawData(const void *data, size_t size, size_t count)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(T) * count, vertices, GL_STATIC_DRAW);
+    bind();
+    glBufferData(GL_ARRAY_BUFFER, size * count, data, GL_STATIC_DRAW);
+    unbind();
 }
 
-template<typename T>
-void VertexBuffer<T>::setIndices(const std::vector<unsigned int> &indices)
+void VertexBuffer::setIndices(const std::vector<unsigned int> &indices)
 {
+    bind();
     m_indexCount = indices.size();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_indexCount, indices.data(), GL_STATIC_DRAW);
+    unbind();
+}
+
+void VertexBuffer::addFloatLayoutAttribute(size_t count)
+{
+    bind();
+    glVertexAttribPointer(m_attributeIndex, count, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(m_attributeIndex++);
+    unbind();
 }
