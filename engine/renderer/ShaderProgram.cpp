@@ -34,7 +34,7 @@ bool ShaderProgram::link()
     return true;
 }
 
-void ShaderProgram::bind()
+void ShaderProgram::use()
 {
     glUseProgram(m_id);
 }
@@ -51,5 +51,21 @@ unsigned int ShaderProgram::getUniformByName(const char *name)
 
 void ShaderProgram::setUniform(unsigned int id, const glm::mat4 &mat)
 {
+    this->use();
     glUniformMatrix4fv(id, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void ShaderProgram::compileAndLinkShaders(const std::string &vertexShaderFile, const std::string &fragmentShaderFile)
+{
+    Shader vertexShader(vertexShaderFile, Shader::ShaderType::VertexShader);
+    auto success = vertexShader.compile();
+    assert(success == true);
+    addShader(vertexShader);
+
+    Shader fragmentShader(fragmentShaderFile, Shader::ShaderType::FragmentShader);
+    success = fragmentShader.compile();
+    assert(success == true);
+    addShader(fragmentShader);
+
+    link();
 }

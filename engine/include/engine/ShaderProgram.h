@@ -16,9 +16,12 @@ namespace Engine {
 
             ~ShaderProgram();
 
+            void compileAndLinkShaders(const std::string &vertexShaderFile,
+                                       const std::string &fragmentShaderFile);
+
             bool link();
 
-            void bind();
+            void use();
 
             void addShader(const Shader &shader);
 

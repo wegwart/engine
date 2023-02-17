@@ -32,7 +32,7 @@ namespace Engine {
      *
      * @return A reference to the current framerate limit.
      */
-    float &framerate();
+    float &framerateLimit();
 
     namespace _internal {
         /**

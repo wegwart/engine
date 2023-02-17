@@ -24,7 +24,7 @@ namespace Engine {
      */
     static float s_framerateLimit = 30.0f;
 
-    float &framerate()
+    float &framerateLimit()
     {
         return s_framerateLimit;
     }
