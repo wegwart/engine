@@ -9,27 +9,29 @@
 #include <engine/Camera.h>
 #include <engine/ShaderProgram.h>
 
-class CameraConfigWindow : public Engine::Window
+class DemoSceneConfigWindow : public Engine::Window
 {
 public:
-    CameraConfigWindow()
-            : Window("Camera Config")
-              , x(10.0)
-              , y(0.0)
-              , z(1.0)
+    DemoSceneConfigWindow()
+            : Window("Demo Scene Config Window")
+              , m_cameraPos{1.0, 10.0, 3.0}
+              , m_cameraLookAt{0.0, 0.0, 0.0}
     {}
 
 protected:
     void renderContents() override
     {
-        ImGui::Text("Camera Position:");
-        ImGui::SliderFloat("X", &x, -80.0, 80.0);
-        ImGui::SliderFloat("Y", &y, -80.0, 80.0);
-        ImGui::SliderFloat("Z", &z, 1.0, 100.0);
+        auto &io = ImGui::GetIO();
+        ImGui::Text("Average real frame rate: %f FPS", io.Framerate);
+        ImGui::SliderFloat("Framerate limit", &Engine::framerate(), 1.0, 60.0);
+        ImGui::Separator();
+        ImGui::SliderFloat3("Camera Position", (float *) &m_cameraPos, -20.0, 20.0);
+        ImGui::SliderFloat3("Camera Look-At", (float *) &m_cameraLookAt, -20.0, 20.0);
     }
 
 public:
-    float x, y, z;
+    float m_cameraPos[3];
+    float m_cameraLookAt[3];
 };
 
 class DemoScene : public Engine::Scene
@@ -37,12 +39,12 @@ class DemoScene : public Engine::Scene
 private:
     Engine::Renderer::ShaderProgram floorShader;
     unsigned int mvpUniform;
-    std::shared_ptr<CameraConfigWindow> configWindow;
+    std::shared_ptr<DemoSceneConfigWindow> configWindow;
 
 public:
     DemoScene()
             : Scene(std::make_shared<Engine::Renderer::Camera>(glm::vec3(0.0, 3.0, 5.0)))
-              , configWindow(std::make_shared<CameraConfigWindow>())
+              , configWindow(std::make_shared<DemoSceneConfigWindow>())
     {
         Engine::Renderer::Shader vertexShader("../shader/vert.glsl",
                                               Engine::Renderer::Shader::ShaderType::VertexShader);
@@ -64,7 +66,11 @@ public:
 
     void update() override
     {
-        getCamera()->setCameraPosition(glm::vec3(configWindow->x, configWindow->y, configWindow->z));
+        getCamera()->setPosition(
+                glm::vec3(configWindow->m_cameraPos[0], configWindow->m_cameraPos[1], configWindow->m_cameraPos[2]));
+        getCamera()->setLookAtPoint(
+                glm::vec3(configWindow->m_cameraLookAt[0], configWindow->m_cameraLookAt[1],
+                          configWindow->m_cameraLookAt[2]));
     }
 
     void render(const glm::mat4 &projectionMatrix) override

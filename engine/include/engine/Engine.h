@@ -3,6 +3,11 @@
 #include <memory>
 
 namespace EngineApp {
+
+    /**
+     * Framework entry point. Implement this function in your code and
+     * use it as your entry point to initialize stuff and set the scene.
+     */
     void onInit();
 }
 
@@ -13,11 +18,21 @@ namespace Engine {
     class Window;
 
     /**
-     * The setScene() method sets the currently active scene.
+     * The setScene() method sets the scene that is currently rendering on the
+     * main viewport of the application.
      *
      * @param scene A shared_ptr to the Scene object
      */
     void setScene(std::shared_ptr<Scene> scene);
+
+    /**
+     * Get/set the current framerate limit. Note that this value only
+     * represents the upper limit. To get the actual framerate, use
+     * ImGui::GetIO().Framerate,  for example.
+     *
+     * @return A reference to the current framerate limit.
+     */
+    float &framerate();
 
     namespace _internal {
         /**
@@ -38,4 +53,3 @@ namespace Engine {
         void unregisterWindow(Window *window);
     }
 }
-

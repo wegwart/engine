@@ -13,7 +13,7 @@ namespace Engine {
                    glm::vec3 upVector = glm::vec3(0.0, 0.0, 1.0)
             );
 
-            void setCameraPosition(glm::vec3 cameraPosition);
+            void setPosition(glm::vec3 cameraPosition);
 
             void setLookAtPoint(glm::vec3 lookAtPoint);
 

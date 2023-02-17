@@ -18,7 +18,6 @@ Window::~Window()
     _internal::unregisterWindow(this);
 }
 
-
 void Window::render()
 {
     renderWindow(m_isVisible);

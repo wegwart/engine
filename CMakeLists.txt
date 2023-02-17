@@ -61,5 +61,5 @@ target_include_directories(engine PRIVATE
         ${PROJECT_SOURCE_DIR}/engine/include
         ${PROJECT_BINARY_DIR}/src
         )
-target_compile_options(engine PRIVATE -pedantic -Wall -Wextra -Werror)
+target_compile_options(engine PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb ${LIBS_LINK})

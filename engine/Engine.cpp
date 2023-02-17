@@ -24,6 +24,11 @@ namespace Engine {
      */
     static float s_framerateLimit = 30.0f;
 
+    float &framerate()
+    {
+        return s_framerateLimit;
+    }
+
     /**
      * The GLFW window handle and defaults for it's size. The viewport
      * perspective projection matrix depends on the viewport's size and is
