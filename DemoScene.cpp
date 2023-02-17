@@ -7,6 +7,7 @@
 #include <engine/Scene.h>
 #include <engine/Window.h>
 #include <engine/Camera.h>
+#include <engine/IndexBuffer.h>
 #include <engine/VertexBuffer.h>
 #include <engine/ShaderProgram.h>
 
@@ -98,8 +99,8 @@ namespace EngineApp {
                 }
             }
 
+            m_indexBuffer.setIndices(indices);
             m_vertexBuffer.setData<glm::vec3>(vertices);
-            m_vertexBuffer.setIndices(indices);
             m_vertexBuffer.addFloatLayoutAttribute(3);
         }
 
@@ -121,11 +122,12 @@ namespace EngineApp {
             m_gridFloorShaderProgram.setUniform(u_mvp, projectionMatrix * getViewMatrix());
 
             // Draw contents of the vertex buffer as triangles
-            m_vertexBuffer.drawTriangles();
+            m_vertexBuffer.drawTriangles(m_indexBuffer);
         }
 
     private:
         unsigned int u_mvp;
+        Engine::Renderer::IndexBuffer m_indexBuffer;
         Engine::Renderer::VertexBuffer m_vertexBuffer;
         Engine::Renderer::ShaderProgram m_gridFloorShaderProgram;
         std::shared_ptr<DemoSceneConfigWindow> config;

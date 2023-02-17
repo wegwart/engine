@@ -6,6 +6,8 @@
 namespace Engine {
     namespace Renderer {
 
+        class IndexBuffer;
+
         /**
          * The VertexBuffer class controls not only an actual GPU
          * vertex buffer but also an index buffer.
@@ -20,10 +22,16 @@ namespace Engine {
             ~VertexBuffer();
 
             /**
-             * drawTriangles() binds the vertex and index buffer and
-             * draws their contents as triangles.
+             * drawTriangles() binds the vertex buffer and draws
+             * its contents as triangles.
              */
             void drawTriangles();
+
+            /**
+             * drawTriangles() draws the vertices selected by the indices
+             * from the index buffer as triangles.
+             */
+            void drawTriangles(IndexBuffer &indexBuffer);
 
             /**
              * Submit data contained in the std::vector to GPU memory.
@@ -33,15 +41,9 @@ namespace Engine {
             template<typename T>
             void setData(const std::vector<T> &vertices)
             {
-                setRawData((const void *) vertices.data(), sizeof(T), vertices.size());
+                m_vertexCount = vertices.size();
+                setRawData((const void *) vertices.data(), sizeof(T), m_vertexCount);
             }
-
-            /**
-             * Submit a vector of indices (unsigned int) to an index
-             * buffer in GPU memory.
-             * @param indices The vector of indices.
-             */
-            void setIndices(const std::vector<unsigned int> &indices);
 
             /**
              * Describe the layout of your vertices by calling this function.
@@ -57,9 +59,9 @@ namespace Engine {
             static void unbind();
 
         private:
-            unsigned int m_indexCount;
+            unsigned int m_vertexCount;
             unsigned int m_attributeIndex;
-            unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
+            unsigned int m_vertexArray, m_vertexBuffer;
         };
     } // Engine
 } // Renderer

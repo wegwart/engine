@@ -55,7 +55,7 @@ add_executable(engine
         engine/include/engine/ShaderProgram.h
         engine/renderer/Camera.cpp
         engine/include/engine/Camera.h
-        )
+        engine/IndexBuffer.cpp engine/include/engine/IndexBuffer.h)
 target_include_directories(engine PRIVATE
         /usr/include/imgui
         ${PROJECT_SOURCE_DIR}/engine/include

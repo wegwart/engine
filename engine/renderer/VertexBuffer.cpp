@@ -1,32 +1,42 @@
 #include <GL/glew.h>
+#include <engine/IndexBuffer.h>
 #include <engine/VertexBuffer.h>
 
 using namespace Engine::Renderer;
 
 VertexBuffer::VertexBuffer()
-        : m_indexCount(0)
 {
     glGenVertexArrays(1, &m_vertexArray);
     glGenBuffers(1, &m_vertexBuffer);
-    glGenBuffers(1, &m_indexBuffer);
 
     bind();
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
     unbind();
 }
 
 VertexBuffer::~VertexBuffer()
 {
     glDeleteBuffers(1, &m_vertexBuffer);
-    glDeleteBuffers(1, &m_indexBuffer);
     glDeleteVertexArrays(1, &m_vertexArray);
 }
 
 void VertexBuffer::drawTriangles()
 {
     bind();
-    glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, nullptr);
+    assert(m_vertexCount > 0);
+    assert(m_vertexCount % 3 == 0);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
+    unbind();
+}
+
+void VertexBuffer::drawTriangles(IndexBuffer &indexBuffer)
+{
+    bind();
+    indexBuffer.bind();
+    assert(indexBuffer.indexCount() > 0);
+    assert(indexBuffer.indexCount() % 3 == 0);
+    glDrawElements(GL_TRIANGLES, indexBuffer.indexCount(), GL_UNSIGNED_INT, nullptr);
+    IndexBuffer::unbind();
     unbind();
 }
 
@@ -43,15 +53,8 @@ void VertexBuffer::unbind()
 void VertexBuffer::setRawData(const void *data, size_t size, size_t count)
 {
     bind();
+    //glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, size * count, data, GL_STATIC_DRAW);
-    unbind();
-}
-
-void VertexBuffer::setIndices(const std::vector<unsigned int> &indices)
-{
-    bind();
-    m_indexCount = indices.size();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_indexCount, indices.data(), GL_STATIC_DRAW);
     unbind();
 }
 
