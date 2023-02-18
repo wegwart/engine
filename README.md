@@ -28,3 +28,44 @@ mkdir build && cd build
 cmake ..
 cmake --build .
 ```
+
+## Known issues
+
+### Shader can not be read if not run from build folder
+
+```
+$ ./build/DemoSceneApp
+[2023-02-18 17:13:17.790] [info] OpenGL version is 4.5
+[2023-02-18 17:13:17.794] [error] OpenGL shader compilation failed: 0:1(1): error: syntax error, unexpected end of file
+
+DemoSceneApp: /home/wegwart/work/engine/engine/renderer/ShaderProgram.cpp:63: void Engine::Renderer::ShaderProgram::compileAndLinkShaders(const string&, const string&): Assertion `success == true' failed.
+Aborted
+```
+
+Required launch settings for Visual Studio Code
+
+.vscode/launch.json
+```
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "program": "DemoSceneApp",
+            "cwd": "${workspaceFolder}/build"
+        }
+    ]
+}
+```
+
+### Segmentation fault after terminating program
+
+```
+build$ ./DemoSceneApp
+[2023-02-18 17:18:11.309] [info] OpenGL version is 4.5
+Segmentation fault
+```
+
+
