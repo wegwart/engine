@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.18)
 
 project(ulmer_engine VERSION 0.1)
 
-add_subdirectory(lib)
-
 # Default build type: Release
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")

@@ -15,7 +15,8 @@ configure_file(
         ${CONFIG_HEADER}
 )
 
-set(ENGINE_HEADERS
+add_library(engine STATIC
+        ${CONFIG_HEADER}
         include/engine/Engine.h
         include/engine/Scene.h
         include/engine/Window.h
@@ -27,9 +28,6 @@ set(ENGINE_HEADERS
         include/engine/ShaderProgram.h
         include/engine/IndexBuffer.h
         include/engine/VertexBuffer.h
-        )
-
-set(ENGINE_SOURCES
         Engine.cpp
         Scene.cpp
         Window.cpp
@@ -43,17 +41,10 @@ set(ENGINE_SOURCES
         renderer/Camera.cpp
         )
 
-add_library(engine STATIC
-        ${CONFIG_HEADER}
-        ${ENGINE_HEADERS}
-        ${ENGINE_SOURCES}
-        )
-
 target_include_directories(engine PUBLIC
         /usr/include/imgui
         ${PROJECT_SOURCE_DIR}/engine/include
         ${PROJECT_BINARY_DIR}/src
-        ${LIBS_INCLUDE}
         )
 
-target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb ${LIBS_LINK})
+target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb -lassimp)

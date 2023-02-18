@@ -3,12 +3,6 @@
 This project is a 3D rendering engine that is used by me to learn
 about 3D graphics and OpenGL.
 
-## Cloning
-
-Use the recursive clone to fetch the submodules!
-
-`git clone --recursive https://github.com/ulmer-a/engine`
-
 ## Dependencies
 
 * GLM for all the maths
@@ -20,10 +14,10 @@ Use the recursive clone to fetch the submodules!
 
 Ubuntu/Debian packages:
 
-`libglfw3-dev libglew-dev libspdlog-dev libimgui-dev libstb-dev`
+`libglfw3-dev libglew-dev libspdlog-dev libimgui-dev libstb-dev libglm-dev libassimp-dev`
 
 I plan on including all these dependencies in the form of git
-submodules. This should make it easier to do cross-platform builds.~~~~
+submodules. This should make it easier to do cross-platform builds.
 
 ## Compiling and Running
 
