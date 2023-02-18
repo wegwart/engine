@@ -5,7 +5,6 @@
 using namespace Engine::Renderer;
 
 VertexBuffer::VertexBuffer()
-        : m_attributeIndex(0)
 {
     glGenVertexArrays(1, &m_vertexArray);
     glGenBuffers(1, &m_vertexBuffer);
@@ -53,16 +52,37 @@ void VertexBuffer::unbind()
 
 void VertexBuffer::setRawData(const void *data, size_t size, size_t count)
 {
-    bind();
+    assert(m_attributes.size() > 0);
     m_vertexCount = count;
+
+    bind();
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, size * count, data, GL_STATIC_DRAW);
+    setVertexAttributes(size);
     unbind();
 }
 
 void VertexBuffer::addFloatLayoutAttribute(size_t count)
 {
-    bind();
-    glVertexAttribPointer(m_attributeIndex, count, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(m_attributeIndex++);
-    unbind();
+    m_attributes.push_back(VertexAttribute{
+            GL_FLOAT,
+            sizeof(float),
+            count,
+    });
+}
+
+void VertexBuffer::setVertexAttributes(size_t vertexSize)
+{
+    // assuming the vertex buffer object is already bound!
+
+    size_t offset = 0;
+    for (unsigned int i = 0; i < m_attributes.size(); i++)
+    {
+        const auto &attr = m_attributes[i];
+        glVertexAttribPointer(i, attr.count, attr.type, GL_FALSE, vertexSize, (void *) offset);
+        glEnableVertexAttribArray(i);
+        offset += attr.size * attr.count;
+    }
+
+    m_attributes.clear();
 }

@@ -15,7 +15,7 @@ Window::Window(const std::string &windowTitle, int flags)
 
 Window::~Window()
 {
-    _internal::unregisterWindow(this);
+    //_internal::unregisterWindow(this);
 }
 
 void Window::render()

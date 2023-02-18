@@ -25,11 +25,13 @@ add_library(engine STATIC
         include/engine/Renderer.h
         include/engine/Camera.h
         include/engine/Shader.h
+        include/engine/Mesh.h
         include/engine/ShaderProgram.h
         include/engine/IndexBuffer.h
         include/engine/VertexBuffer.h
         Engine.cpp
         Scene.cpp
+        Mesh.cpp
         Window.cpp
         DemoWindow.cpp
         OverlayWindow.cpp
@@ -38,8 +40,7 @@ add_library(engine STATIC
         renderer/Shader.cpp
         renderer/Renderer.cpp
         renderer/ShaderProgram.cpp
-        renderer/Camera.cpp
-        )
+        renderer/Camera.cpp)
 
 target_include_directories(engine PUBLIC
         /usr/include/imgui
