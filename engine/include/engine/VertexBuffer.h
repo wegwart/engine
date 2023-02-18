@@ -53,13 +53,22 @@ namespace Engine {
         private:
             void setRawData(const void *data, size_t size, size_t count);
 
+            void setVertexAttributes(size_t vertexSize);
+
             void bind();
 
             static void unbind();
 
         private:
+            struct VertexAttribute
+            {
+                int type;
+                size_t size;
+                size_t count;
+            };
+
             unsigned int m_vertexCount;
-            unsigned int m_attributeIndex;
+            std::vector<VertexAttribute> m_attributes;
             unsigned int m_vertexArray, m_vertexBuffer;
         };
     } // Engine

@@ -188,6 +188,8 @@ namespace Engine {
         (void) argc;
         (void) argv;
 
+        spdlog::set_level(spdlog::level::debug);
+
         setupGlfwWindow("Ulmer 3D Game Engine");
         setupImGui();
         setupOpenGl();

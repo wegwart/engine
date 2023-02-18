@@ -3,6 +3,7 @@
 
 #include <engine/Engine.h>
 #include <engine/Scene.h>
+#include <engine/Mesh.h>
 #include <engine/Window.h>
 #include <engine/Camera.h>
 #include <engine/IndexBuffer.h>
@@ -62,10 +63,13 @@ namespace EngineApp {
             // a single shader program that we can use
             m_gridFloorShaderProgram.compileAndLinkShaders("../shader/demoVertexShader.glsl",
                                                            "../shader/demoFragmentShader.glsl");
+            m_characterShader.compileAndLinkShaders("../shader/v_animatedCharacter.glsl",
+                                                    "../shader/f_animatedCharacter.glsl");
 
             // after the shader program has been linked we query the ID
             // of the u_MVP uniform so we can upload the MVP matrix later...
             u_mvp = m_gridFloorShaderProgram.getUniformByName("u_MVP");
+            u_mvpChar = m_characterShader.getUniformByName("u_MVP");
 
             // We want to render a tiled floor that spans a square area of 100 m2. To do
             // that we create a vertex buffer here in the constructor and fill it with
@@ -92,8 +96,10 @@ namespace EngineApp {
             }
 
             // upload our vertex data to the GPU
-            m_vertexBuffer.setData<glm::vec3>(vertices);
             m_vertexBuffer.addFloatLayoutAttribute(3);
+            m_vertexBuffer.setData<glm::vec3>(vertices);
+
+            m_characterMesh.fromFile("../data/man_suit.fbx");
         }
 
         void update() override
@@ -111,16 +117,23 @@ namespace EngineApp {
         {
             // Compute the Model-View-Projection matrix and upload it to the shader
             // program on the GPU (model component has been left out for now)
-            m_gridFloorShaderProgram.setUniform(u_mvp, projectionMatrix * getViewMatrix());
+            const auto MV = projectionMatrix * getViewMatrix();
+            m_gridFloorShaderProgram.setUniform(u_mvp, MV);
+            m_characterShader.setUniform(u_mvpChar, MV);
 
             // Draw contents of the vertex buffer as triangles
+            m_gridFloorShaderProgram.use();
             m_vertexBuffer.drawTriangles();
+
+            m_characterShader.use();
+            m_characterMesh.render();
         }
 
     private:
-        unsigned int u_mvp;
+        unsigned int u_mvp, u_mvpChar;
+        Engine::Mesh m_characterMesh;
         Engine::Renderer::VertexBuffer m_vertexBuffer;
-        Engine::Renderer::ShaderProgram m_gridFloorShaderProgram;
+        Engine::Renderer::ShaderProgram m_gridFloorShaderProgram, m_characterShader;
         std::shared_ptr<DemoSceneConfigWindow> config;
     };
 
