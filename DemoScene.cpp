@@ -1,7 +1,5 @@
-#include <imgui/imgui.h>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include <imgui/imgui.h>
 
 #include <engine/Engine.h>
 #include <engine/Scene.h>
@@ -74,32 +72,26 @@ namespace EngineApp {
             // the vertices that make up our grid. We also use an index buffer to reduce
             // the amount of vertices in our vertex buffer.
             std::vector<glm::vec3> vertices;
-            std::vector<unsigned int> indices;
-            unsigned int currentIndex = 0;
-            for (int x = -50; x <= 50; x++)
+            for (int x = -50; x < 50; x++)
             {
-                for (int y = -50; y <= 50; y++)
+                for (int y = -50; y < 50; y++)
                 {
-                    vertices.push_back(glm::vec3(x, y, 0.0));
+                    // let's use the z-coordinate (which is always zero here) for color info
+                    const auto color = ((x % 2) * (x % 2) == (y % 2) * (y % 2)) ? 1.0f : -1.0f;
 
-                    if (x < 50 && y < 50)
-                    {
-                        // first triangle of the quad
-                        indices.push_back(currentIndex);
-                        indices.push_back(currentIndex + 1);
-                        indices.push_back(currentIndex + 101);
+                    // first triangle of the quad
+                    vertices.push_back(glm::vec3(x, y, color));
+                    vertices.push_back(glm::vec3(x + 1, y, color));
+                    vertices.push_back(glm::vec3(x, y + 1, color));
 
-                        // second triangle of the quad
-//                        indices.push_back(currentIndex + 1);
-//                        indices.push_back(currentIndex + 101);
-//                        indices.push_back(currentIndex + 102);
-                    }
-
-                    currentIndex += 1;
+                    // second triangle of the quad
+                    vertices.push_back(glm::vec3(x + 1, y, color));
+                    vertices.push_back(glm::vec3(x, y + 1, color));
+                    vertices.push_back(glm::vec3(x + 1, y + 1, color));
                 }
             }
 
-            m_indexBuffer.setIndices(indices);
+            // upload our vertex data to the GPU
             m_vertexBuffer.setData<glm::vec3>(vertices);
             m_vertexBuffer.addFloatLayoutAttribute(3);
         }
@@ -122,12 +114,11 @@ namespace EngineApp {
             m_gridFloorShaderProgram.setUniform(u_mvp, projectionMatrix * getViewMatrix());
 
             // Draw contents of the vertex buffer as triangles
-            m_vertexBuffer.drawTriangles(m_indexBuffer);
+            m_vertexBuffer.drawTriangles();
         }
 
     private:
         unsigned int u_mvp;
-        Engine::Renderer::IndexBuffer m_indexBuffer;
         Engine::Renderer::VertexBuffer m_vertexBuffer;
         Engine::Renderer::ShaderProgram m_gridFloorShaderProgram;
         std::shared_ptr<DemoSceneConfigWindow> config;

@@ -41,8 +41,7 @@ namespace Engine {
             template<typename T>
             void setData(const std::vector<T> &vertices)
             {
-                m_vertexCount = vertices.size();
-                setRawData((const void *) vertices.data(), sizeof(T), m_vertexCount);
+                setRawData((const void *) vertices.data(), sizeof(T), vertices.size());
             }
 
             /**

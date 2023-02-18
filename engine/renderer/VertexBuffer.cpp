@@ -5,6 +5,7 @@
 using namespace Engine::Renderer;
 
 VertexBuffer::VertexBuffer()
+        : m_attributeIndex(0)
 {
     glGenVertexArrays(1, &m_vertexArray);
     glGenBuffers(1, &m_vertexBuffer);
@@ -53,7 +54,7 @@ void VertexBuffer::unbind()
 void VertexBuffer::setRawData(const void *data, size_t size, size_t count)
 {
     bind();
-    //glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    m_vertexCount = count;
     glBufferData(GL_ARRAY_BUFFER, size * count, data, GL_STATIC_DRAW);
     unbind();
 }
