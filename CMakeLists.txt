@@ -18,49 +18,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "C++ Standard: C++${CMAKE_CXX_STANDARD}")
 
-# generate the configuration header
-set(CONFIG_HEADER ${PROJECT_BINARY_DIR}/src/config.h)
-string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
-execute_process(
-        COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE COMMIT_HASH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/engine/config.h.in
-        ${CONFIG_HEADER}
-)
+add_compile_options(-Wall -Wextra -Werror)
+add_subdirectory(engine)
 
-add_executable(engine
-        ${CONFIG_HEADER}
-        DemoScene.cpp
-        engine/include/engine/Engine.h
-        engine/Engine.cpp
-        engine/Window.cpp
-        engine/include/engine/Window.h
-        engine/OverlayWindow.cpp
-        engine/include/engine/OverlayWindow.h
-        engine/DemoWindow.cpp
-        engine/include/engine/DemoWindow.h
-        engine/Scene.cpp
-        engine/include/engine/Scene.h
-        engine/renderer/VertexBuffer.cpp
-        engine/include/engine/VertexBuffer.h
-        engine/renderer/Shader.cpp
-        engine/include/engine/Shader.h
-        engine/renderer/Renderer.cpp
-        engine/include/engine/Renderer.h
-        engine/renderer/ShaderProgram.cpp
-        engine/include/engine/ShaderProgram.h
-        engine/renderer/Camera.cpp
-        engine/include/engine/Camera.h
-        engine/IndexBuffer.cpp engine/include/engine/IndexBuffer.h)
-target_include_directories(engine PRIVATE
-        /usr/include/imgui
-        ${PROJECT_SOURCE_DIR}/engine/include
-        ${PROJECT_BINARY_DIR}/src
-        ${LIBS_INCLUDE}
-        )
-target_compile_options(engine PRIVATE -Wall -Wextra -Werror)
-target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb ${LIBS_LINK})
+add_executable(DemoSceneApp DemoScene.cpp)
+target_link_libraries(DemoSceneApp PRIVATE engine)

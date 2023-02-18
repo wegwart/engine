@@ -59,6 +59,7 @@ void ShaderProgram::compileAndLinkShaders(const std::string &vertexShaderFile, c
 {
     Shader vertexShader(vertexShaderFile, Shader::ShaderType::VertexShader);
     auto success = vertexShader.compile();
+    (void) success;
     assert(success == true);
     addShader(vertexShader);
 

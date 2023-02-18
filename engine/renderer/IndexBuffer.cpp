@@ -1,5 +1,5 @@
 #include <GL/glew.h>
-#include <engine/IndexBuffer.h>
+#include "engine/IndexBuffer.h"
 
 using namespace Engine::Renderer;
 
