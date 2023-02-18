@@ -60,6 +60,7 @@ target_include_directories(engine PRIVATE
         /usr/include/imgui
         ${PROJECT_SOURCE_DIR}/engine/include
         ${PROJECT_BINARY_DIR}/src
+        ${LIBS_INCLUDE}
         )
 target_compile_options(engine PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(engine -lglfw -lGL -lGLEW -lspdlog -lfmt -limgui -lstb ${LIBS_LINK})

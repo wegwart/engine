@@ -15,11 +15,12 @@ cmake_minimum_required(VERSION 3.14)
 #
 #add_subdirectory(spdlog)
 #
-## ------------ glm ---------------
-#set(GLM_LIB_NAME "glm")
-#set(GLM_INC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/glm)
-#
-#add_library(${GLM_LIB_NAME} INTERFACE)
+
+# ------------ glm ---------------
+set(GLM_LIB_NAME "glm")
+set(GLM_INC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/glm)
+
+add_library(${GLM_LIB_NAME} INTERFACE)
 
 
 # ----------- imgui --------------
@@ -56,17 +57,16 @@ set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "Build assimp with all 
 set(ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "Build assimp with FBX importer" FORCE)
 add_subdirectory(${ASSMIP_LIB_NAME})
 
-#set(LIBS_INCLUDE
-#        #${IMGUI_INC_PATH}
-#        #${GLM_INC_PATH}
-#        PARENT_SCOPE
-#        )
+set(LIBS_INCLUDE
+        #${IMGUI_INC_PATH}
+        ${GLM_INC_PATH}
+        PARENT_SCOPE)
 
 set(LIBS_LINK
         #${IMGUI_LIB_NAME}
         #${GLFW_LIB_NAME}
         #${SPDLOG_LIB_NAME}
         #${STB_IMAGE_LIB_NAME}
-        #${GLM_LIB_NAME}
+        ${GLM_LIB_NAME}
         ${ASSMIP_LIB_NAME}
         PARENT_SCOPE)
