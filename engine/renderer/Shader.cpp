@@ -23,6 +23,7 @@ bool Shader::compile()
     {
         try
         {
+            spdlog::info("compile: {}", m_filename);
             std::ifstream sourceCodeFile(m_filename);
             std::stringstream sourceCodeBuffer;
             sourceCodeBuffer << sourceCodeFile.rdbuf();

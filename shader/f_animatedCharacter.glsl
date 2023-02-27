@@ -1,7 +1,7 @@
 #version 300 es
 
-in vec3 frag_normals;
-out vec4 fragColor;
+in mediump vec3 frag_normals;
+out mediump vec4 fragColor;
 
 void main()
 {

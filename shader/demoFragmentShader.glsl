@@ -1,7 +1,7 @@
 #version 300 es
 
-in vec4 triangleColor;
-out vec4 fragColor;
+in mediump vec4 triangleColor;
+out mediump vec4 fragColor;
 
 void main()
 {
