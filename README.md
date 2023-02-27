@@ -68,4 +68,12 @@ build$ ./DemoSceneApp
 Segmentation fault
 ```
 
+### OpenGL versions not supported on Raspberry PI 4 
+
+```
+build$ ./DemoSceneApp 
+Failed to initialize OpenGL loader!
+[2023-02-27 20:50:36.439] [info] OpenGL version is -1548863456.65535
+[2023-02-27 20:50:36.495] [error] OpenGL shader compilation failed: 0:1(10): error: GLSL 3.30 is not supported. Supported versions are: 1.10, 1.20, 1.00 ES, and 3.00 ES
+```
 

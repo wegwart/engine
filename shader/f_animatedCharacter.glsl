@@ -1,4 +1,4 @@
-#version 330 core
+#version 300 es
 
 in vec3 frag_normals;
 out vec4 fragColor;
